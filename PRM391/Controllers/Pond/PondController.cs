@@ -16,7 +16,7 @@ namespace KOI.Controllers.Pond
         }
 
         // GET: api/Ponds
-        [HttpGet]
+        [HttpGet("get-all-pond")]
         public async Task<ActionResult<List<PondsResponse>>> GetAllPonds()
         {
             var ponds = await _pondsRepository.GetAllPonds();
@@ -27,6 +27,31 @@ namespace KOI.Controllers.Pond
             }
 
             return Ok(ponds);
+        }
+        [HttpGet("get-pond/{id}")]
+        public async Task<ActionResult<PondsResponse>> GetPondsById(int id)
+        {
+            var pond = await _pondsRepository.GetPondsById(id);
+
+            if (pond == null)
+            {
+                return NotFound($"Pond with ID {id} not found.");
+            }
+
+            return Ok(pond);
+        }
+
+        [HttpGet("get-pond-by-userId/{userId}")]
+        public async Task<ActionResult<PondsResponse>> GetPondsByUserId(int userId)
+        {
+            var pond = await _pondsRepository.GetAllPondsByUserId(userId);
+
+            if (pond == null)
+            {
+                return NotFound($"Pond with ID {userId} not found.");
+            }
+
+            return Ok(pond);
         }
     }
 }

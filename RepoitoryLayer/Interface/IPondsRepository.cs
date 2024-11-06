@@ -10,5 +10,9 @@ namespace RepoitoryLayer.Interface
     public interface IPondsRepository
     {
         Task<List<PondsResponse>> GetAllPonds();
+
+        Task<PondsResponse> GetPondsById(int id);
+
+        Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
     }
 }

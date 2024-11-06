@@ -28,9 +28,14 @@ namespace ServiceLayer.Implement
             return await pondsRepository.GetAllPonds();
         }
 
-        public Task<PondsResponse> GetPondsById(int id)
+        public async Task<List<PondsResponse>> GetAllPondsByUserId(int userId)
         {
-            throw new NotImplementedException();
+            return await pondsRepository.GetAllPondsByUserId(userId);
+        }
+
+        public async Task<PondsResponse> GetPondsById(int id)
+        {
+            return await pondsRepository.GetPondsById(id);
         }
     }
 }
