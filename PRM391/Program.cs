@@ -82,6 +82,16 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3001")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -103,6 +113,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseRouting();
 app.UseCors("AllowAll");
+app.UseCors("AllowReactApp");
 app.UseAuthorization();
 
 app.MapControllers();
