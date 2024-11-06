@@ -31,10 +31,7 @@ namespace ServiceLayer.Implement
            
         }
 
-        public Task<bool> DeletePonds(int id)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public async Task<List<PondsResponse>> GetAllPonds()
         {
@@ -49,6 +46,25 @@ namespace ServiceLayer.Implement
         public async Task<PondsResponse> GetPondsById(int id)
         {
             return await pondsRepository.GetPondsById(id);
+        }
+
+        public async Task<string> UpdatePonds(int ponds, PondsRequest pondsRequest)
+        {
+           bool updatePond = await pondsRepository.UpdatePond(ponds, pondsRequest);
+            if(!updatePond == true)
+            {
+                return "update pond succesfully";
+            }
+            return "fail";
+        }
+        public async Task<bool> DeletePonds(int id)
+        {
+            bool deletePond = await pondsRepository.DeletePond(id);
+            if (deletePond == true)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

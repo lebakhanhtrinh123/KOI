@@ -27,43 +27,23 @@ namespace RepoitoryLayer.Implement
             _waterParametersRepository = waterParametersRepository;
         }
 
-        public async Task<bool> CreatePonds(int userId,PondsRequest pondsRequest)
+       
+
+        public async Task<bool> DeletePond(int id)
         {
-            Pond pond = new Pond
-            {
-                PondName = pondsRequest.PondName,
-                Size = pondsRequest.Size,   
-                Depth = pondsRequest.Depth,
-                Volume = pondsRequest.Volume,   
-                WaterDischargeRate = pondsRequest.WaterDischargeRate,
-                PumpCapacity = pondsRequest.PumpCapacity,
-                UserId = userId,
-            };
-            _context.Ponds.Add(pond);
-            _context.SaveChanges();
-            SaltCalculation saltCalculation = new SaltCalculation
-            {
-                PondId = pond.PondId,
-                CalculationDate = pondsRequest.CalculationDate,
-                SaltAmount = pondsRequest.SaltAmount,
-                Notes = pondsRequest.Notes,
-            };
-            WaterParameter waterParameter = new WaterParameter
-            {
-                PondId = pond.PondId,
-                MeasurementDate = pondsRequest.MeasurementDate,
-                Temperature = pondsRequest.Temperature,
-                Salinity = pondsRequest.Salinity,
-                PH = pondsRequest.PH,
-                Oxygen = pondsRequest.Oxygen,
-                No2 = pondsRequest.No2,
-                No3 = pondsRequest.No3,
-                Po4 = pondsRequest.Po4,
-            };
-           await  _context.SaltCalculations.AddAsync(saltCalculation);
-           await  _context.WaterParameters.AddAsync(waterParameter);
-           await _context.SaveChangesAsync();
-           return true;
+            var pond = await _context.Ponds
+                        .Include(o => o.SaltCalculations)
+                        .Include(n => n.WaterParameters)
+                        .FirstOrDefaultAsync(n => n.PondId == id);
+            if (pond == null)
+                return false;
+            _context.SaltCalculations.RemoveRange(pond.SaltCalculations);
+            _context.WaterParameters.RemoveRange(pond.WaterParameters);
+            _context.Ponds.Remove(pond);
+
+            await _context.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<List<PondsResponse>>? GetAllPonds()
@@ -182,6 +162,106 @@ namespace RepoitoryLayer.Implement
                     Notes = salt.Notes,
                 };      
 
+        }
+        public async Task<bool> CreatePonds(int userId, PondsRequest pondsRequest)
+        {
+            Pond pond = new Pond
+            {
+                PondName = pondsRequest.PondName,
+                Size = pondsRequest.Size,
+                Depth = pondsRequest.Depth,
+                Volume = pondsRequest.Volume,
+                WaterDischargeRate = pondsRequest.WaterDischargeRate,
+                PumpCapacity = pondsRequest.PumpCapacity,
+                UserId = userId,
+            };
+            _context.Ponds.Add(pond);
+            _context.SaveChanges();
+            SaltCalculation saltCalculation = new SaltCalculation
+            {
+                PondId = pond.PondId,
+                CalculationDate = pondsRequest.CalculationDate,
+                SaltAmount = pondsRequest.SaltAmount,
+                Notes = pondsRequest.Notes,
+            };
+            WaterParameter waterParameter = new WaterParameter
+            {
+                PondId = pond.PondId,
+                MeasurementDate = pondsRequest.MeasurementDate,
+                Temperature = pondsRequest.Temperature,
+                Salinity = pondsRequest.Salinity,
+                PH = pondsRequest.PH,
+                Oxygen = pondsRequest.Oxygen,
+                No2 = pondsRequest.No2,
+                No3 = pondsRequest.No3,
+                Po4 = pondsRequest.Po4,
+            };
+            await _context.SaltCalculations.AddAsync(saltCalculation);
+            await _context.WaterParameters.AddAsync(waterParameter);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> UpdatePond(int  pondId , PondsRequest pondsRequest)
+        {
+            var pond = await _context.Ponds
+                .Include(o => o.SaltCalculations)
+                 .Include(n => n.WaterParameters)
+               .FirstOrDefaultAsync(n => n.PondId == pondId);
+
+            pond.PondName = pondsRequest.PondName;
+            pond.Size = pondsRequest.Size;
+            pond.Depth = pondsRequest.Depth;
+            pond.Volume = pondsRequest.Volume;
+            pond.WaterDischargeRate = pondsRequest.WaterDischargeRate;
+            pond.PumpCapacity = pondsRequest.PumpCapacity;
+            var salt = await _saltCalculationsRepository.GetSaltCalculationsByPondID(pondId);
+            var waterParameter = await _waterParametersRepository.GetWaterParametersByPondID(pondId);
+            if (salt != null)
+            {
+                salt.CalculationDate = pondsRequest.CalculationDate;
+                salt.SaltAmount = pondsRequest.SaltAmount;
+                salt.Notes = pondsRequest.Notes;
+            }
+            else
+            {
+                salt = new SaltCalculation
+                {
+                    PondId = pond.PondId,
+                    CalculationDate = pondsRequest.CalculationDate,
+                    SaltAmount = pondsRequest.SaltAmount,
+                    Notes = pondsRequest.Notes
+                };
+                await _context.SaltCalculations.AddAsync(salt);
+            }
+            if (waterParameter != null)
+            {
+                waterParameter.MeasurementDate = pondsRequest.MeasurementDate;
+                waterParameter.Temperature = pondsRequest.Temperature;
+                waterParameter.Salinity = pondsRequest.Salinity;
+                waterParameter.PH = pondsRequest.PH;
+                waterParameter.Oxygen = pondsRequest.Oxygen;
+                waterParameter.No2 = pondsRequest.No2;
+                waterParameter.No3 = pondsRequest.No3;
+                waterParameter.Po4 = pondsRequest.Po4;
+            }
+            else
+            {
+                waterParameter = new WaterParameter
+                {
+                    PondId = pond.PondId,
+                    MeasurementDate = pondsRequest.MeasurementDate,
+                    Temperature = pondsRequest.Temperature,
+                    Salinity = pondsRequest.Salinity,
+                    PH = pondsRequest.PH,
+                    Oxygen = pondsRequest.Oxygen,
+                    No2 = pondsRequest.No2,
+                    No3 = pondsRequest.No3,
+                    Po4 = pondsRequest.Po4
+                };
+                await _context.WaterParameters.AddAsync(waterParameter);
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

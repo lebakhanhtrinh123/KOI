@@ -16,7 +16,7 @@ namespace ServiceLayer.Interface
         Task<string> CreatePonds(int userId ,PondsRequest pondsRequest);
         Task<bool> DeletePonds(int id);
         Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
-
+        Task<string> UpdatePonds(int ponds , PondsRequest pondsRequest);
      
 
 

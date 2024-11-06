@@ -68,5 +68,29 @@ namespace KOI.Controllers.Pond
 
             return BadRequest("Create Ponds Failed");
         }
+        [HttpPut("update-pond/{ponds}")]
+        public async Task<IActionResult> UpdatePonds(int ponds, [FromBody] PondsRequest pondsRequest)
+        {
+            bool updatePond = await _pondsRepository.UpdatePond(ponds, pondsRequest);
+
+            if (updatePond)
+            {
+                return Ok("Update pond successfully");
+            }
+
+            return BadRequest("Update failed");
+        }
+        [HttpDelete("delete-pond/{id}")]
+        public async Task<IActionResult> DeletePonds(int id)
+        {
+            bool deletePond = await _pondsRepository.DeletePond(id);
+
+            if (deletePond)
+            {
+                return Ok("Delete pond successfully");
+            }
+
+            return BadRequest("Delete failed");
+        }
     }
 }
