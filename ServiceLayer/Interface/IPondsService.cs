@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Request;
 using BusinessLayer.Response;
+using BusinessLayer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace ServiceLayer.Interface
         Task<string> CreatePonds(PondsRequest pondsRequest);
         Task<bool> DeletePonds(int id);
         Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
+
+     
+
 
     }
 }

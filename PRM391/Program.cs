@@ -73,6 +73,9 @@ builder.Services.AddScoped<ISaltCalculationsRepository, SaltCalculationsReposito
 builder.Services.AddScoped<IWaterParametersRepository, WaterParametersRepository>();
 
 
+builder.Services.AddScoped<ISaltCalculationService, SaltCalculationService>();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>

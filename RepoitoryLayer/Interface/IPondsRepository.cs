@@ -14,5 +14,6 @@ namespace RepoitoryLayer.Interface
         Task<PondsResponse> GetPondsById(int id);
 
         Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
+
     }
 }
