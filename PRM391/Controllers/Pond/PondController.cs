@@ -1,5 +1,7 @@
-﻿using BusinessLayer.Response;
+﻿using BusinessLayer.Request;
+using BusinessLayer.Response;
 using Microsoft.AspNetCore.Mvc;
+using RepoitoryLayer.Implement;
 using RepoitoryLayer.Interface;
 
 namespace KOI.Controllers.Pond
@@ -52,6 +54,19 @@ namespace KOI.Controllers.Pond
             }
 
             return Ok(pond);
+        }
+        [HttpPost("create-pond-by-userId/{userId}")]
+        public async Task<IActionResult> CreatePonds(int userId, [FromBody] PondsRequest pondsRequest)
+        {
+
+            var result = await _pondsRepository.CreatePonds(userId, pondsRequest);
+
+            if (result)
+            {
+                return Ok("Create Ponds Successfully");
+            }
+
+            return BadRequest("Create Ponds Failed");
         }
     }
 }

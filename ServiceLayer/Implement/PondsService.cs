@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Request;
+﻿using BusinessLayer.Entity;
+using BusinessLayer.Request;
 using BusinessLayer.Response;
 using RepoitoryLayer.Interface;
 using ServiceLayer.Interface;
@@ -13,9 +14,21 @@ namespace ServiceLayer.Implement
     public class PondsService : IPondsService
     {
         private readonly IPondsRepository pondsRepository;
-        public Task<string> CreatePonds(PondsRequest pondsRequest)
+
+        public PondsService(IPondsRepository pondsRepository)
         {
-            throw new NotImplementedException();
+            this.pondsRepository = pondsRepository;
+        }
+
+        public async Task<string> CreatePonds(int userId, PondsRequest pondsRequest)
+        {
+            bool createpond = await  pondsRepository.CreatePonds(userId,pondsRequest);
+            if (createpond == true)
+            {
+                return "Create Ponds Succesfully";
+            }
+            return "Create Ponds Fail";
+           
         }
 
         public Task<bool> DeletePonds(int id)

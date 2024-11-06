@@ -13,7 +13,7 @@ namespace ServiceLayer.Interface
     {
         Task<List<PondsResponse>> GetAllPonds();
         Task<PondsResponse> GetPondsById(int id);
-        Task<string> CreatePonds(PondsRequest pondsRequest);
+        Task<string> CreatePonds(int userId ,PondsRequest pondsRequest);
         Task<bool> DeletePonds(int id);
         Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
 

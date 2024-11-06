@@ -1,4 +1,6 @@
-﻿using BusinessLayer.Response;
+﻿using BusinessLayer.Entity;
+using BusinessLayer.Request;
+using BusinessLayer.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,8 @@ namespace RepoitoryLayer.Interface
         Task<PondsResponse> GetPondsById(int id);
 
         Task<List<PondsResponse>> GetAllPondsByUserId(int userId);
+
+        Task<bool> CreatePonds(int userId, PondsRequest pondsRequest);  
 
     }
 }
