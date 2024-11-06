@@ -58,5 +58,10 @@ namespace ServiceLayer.Implement
         {
             return await productRepository.DeleteProduct(productID);
         }
+
+        public Task<Product> getProductById(int productID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

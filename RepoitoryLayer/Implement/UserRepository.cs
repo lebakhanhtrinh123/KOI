@@ -1,5 +1,4 @@
-﻿using BusinessLayer.Context;
-using BusinessLayer.Entity;
+﻿using BusinessLayer.Entity;
 using RepoitoryLayer.Interface;
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BusinessLayer.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace BusinessLayer.Context;
+namespace BusinessLayer.Entity;
 
 public partial class KoiContext : DbContext
 {
@@ -18,6 +16,8 @@ public partial class KoiContext : DbContext
     }
 
     public virtual DbSet<Cart> Carts { get; set; }
+
+    public virtual DbSet<KoiFish> KoiFishes { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -33,13 +33,10 @@ public partial class KoiContext : DbContext
 
     public virtual DbSet<WaterParameter> WaterParameters { get; set; }
 
-    private string? GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration["ConnectionStrings:DBDefault"];
-    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=KOI;User ID=sa;Password=12345;Trust Server Certificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
@@ -57,6 +54,28 @@ public partial class KoiContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Carts_Users");
+        });
+
+        modelBuilder.Entity<KoiFish>(entity =>
+        {
+            entity.HasKey(e => e.KoiId);
+
+            entity.ToTable("KoiFish");
+
+            entity.Property(e => e.KoiId).HasColumnName("KoiID");
+            entity.Property(e => e.Breed).HasMaxLength(100);
+            entity.Property(e => e.Gender).HasMaxLength(10);
+            entity.Property(e => e.Image).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Origin).HasMaxLength(100);
+            entity.Property(e => e.PondId).HasColumnName("PondID");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Size).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Weight).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Pond).WithMany(p => p.KoiFishes)
+                .HasForeignKey(d => d.PondId)
+                .HasConstraintName("FK_KoiFish_Ponds1");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -96,9 +115,7 @@ public partial class KoiContext : DbContext
 
         modelBuilder.Entity<Pond>(entity =>
         {
-            entity.Property(e => e.PondId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("PondID");
+            entity.Property(e => e.PondId).HasColumnName("PondID");
             entity.Property(e => e.Depth).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PondName).HasMaxLength(100);
             entity.Property(e => e.PumpCapacity).HasColumnType("decimal(10, 2)");
@@ -106,11 +123,6 @@ public partial class KoiContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.Volume).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.WaterDischargeRate).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.PondNavigation).WithOne(p => p.Pond)
-                .HasForeignKey<Pond>(d => d.PondId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Ponds_SaltCalculation");
 
             entity.HasOne(d => d.User).WithMany(p => p.Ponds)
                 .HasForeignKey(d => d.UserId)
@@ -136,6 +148,10 @@ public partial class KoiContext : DbContext
             entity.Property(e => e.Notes).HasMaxLength(255);
             entity.Property(e => e.PondId).HasColumnName("PondID");
             entity.Property(e => e.SaltAmount).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Pond).WithMany(p => p.SaltCalculations)
+                .HasForeignKey(d => d.PondId)
+                .HasConstraintName("FK_SaltCalculation_Ponds");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -150,8 +166,9 @@ public partial class KoiContext : DbContext
 
         modelBuilder.Entity<WaterParameter>(entity =>
         {
-            entity.HasNoKey();
+            entity.HasKey(e => e.ParameterId);
 
+            entity.Property(e => e.ParameterId).HasColumnName("ParameterID");
             entity.Property(e => e.MeasurementDate).HasColumnType("datetime");
             entity.Property(e => e.No2)
                 .HasColumnType("decimal(5, 2)")
@@ -163,15 +180,16 @@ public partial class KoiContext : DbContext
             entity.Property(e => e.PH)
                 .HasColumnType("decimal(4, 2)")
                 .HasColumnName("pH");
-            entity.Property(e => e.ParameterId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("ParameterID");
             entity.Property(e => e.Po4)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("PO4");
             entity.Property(e => e.PondId).HasColumnName("PondID");
             entity.Property(e => e.Salinity).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Temperature).HasColumnType("decimal(5, 2)");
+
+            entity.HasOne(d => d.Pond).WithMany(p => p.WaterParameters)
+                .HasForeignKey(d => d.PondId)
+                .HasConstraintName("FK_WaterParameters_Ponds");
         });
 
         OnModelCreatingPartial(modelBuilder);

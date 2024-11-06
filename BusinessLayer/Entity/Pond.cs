@@ -21,7 +21,11 @@ public partial class Pond
 
     public int? UserId { get; set; }
 
-    public virtual SaltCalculation PondNavigation { get; set; } = null!;
+    public virtual ICollection<KoiFish> KoiFishes { get; set; } = new List<KoiFish>();
+
+    public virtual ICollection<SaltCalculation> SaltCalculations { get; set; } = new List<SaltCalculation>();
 
     public virtual User? User { get; set; }
+
+    public virtual ICollection<WaterParameter> WaterParameters { get; set; } = new List<WaterParameter>();
 }

@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Context;
+﻿using BusinessLayer.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +65,12 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IVnPayRepo, VnPayRepo>();
 
 
+builder.Services.AddScoped<IPondsRepository, PondsRepository>();
+builder.Services.AddScoped<IPondsService, PondsService>();
+
+builder.Services.AddScoped<ISaltCalculationsRepository, SaltCalculationsRepository>();
+
+builder.Services.AddScoped<IWaterParametersRepository, WaterParametersRepository>();
 
 
 builder.Services.AddCors(options =>

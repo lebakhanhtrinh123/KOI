@@ -24,4 +24,6 @@ public partial class WaterParameter
     public decimal? No3 { get; set; }
 
     public decimal? Po4 { get; set; }
+
+    public virtual Pond? Pond { get; set; }
 }
