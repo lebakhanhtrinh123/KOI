@@ -10,12 +10,11 @@ namespace ServiceLayer.Interface
 {
     public  interface IKoiService
     {
-        public Task<List<KoiFishResponse>> GetKoiFishByPondId(int Pondid);
-        public Task<KoiFishResponse> GetKoiFishById(int id);    
-        public Task<bool> DeleteKoiFish(int id);
-        public Task<string> CreateKoiFish(int pondId , KoiFishRequest koiFishRequest);
-
-        public Task<string> UpdateKoiFish(int id);
+         Task<List<KoiFishResponse>> GetKoiFishByPondId(int Pondid);
+         Task<KoiFishResponse> GetKoiFishById(int id);    
+         Task<bool> DeleteKoiFish(int id);
+         Task<string> CreateKoiFish(int pondId , KoiFishRequest koiFishRequest);
+         Task<string> UpdateKoiFish(int id,KoiFishRequest koiFishRequest);
 
     }
 }

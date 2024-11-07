@@ -1,12 +1,17 @@
-﻿using BusinessLayer.Request;
+﻿using Azure;
+using BusinessLayer.Entity;
+using BusinessLayer.Request;
 using BusinessLayer.Response;
 using RepoitoryLayer.Interface;
 using ServiceLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ServiceLayer.Implement
 {
@@ -21,17 +26,38 @@ namespace ServiceLayer.Implement
 
         public async Task<string> CreateKoiFish(int pondId, KoiFishRequest koiFishRequest)
         {
-            throw new NotImplementedException();
+            var Koi = new KoiFish
+            {
+                Name = koiFishRequest.Name,
+                Image = koiFishRequest?.Image,
+                Age = koiFishRequest?.Age,
+                Size = koiFishRequest?.Size,
+                Weight = koiFishRequest?.Weight,
+                Gender = koiFishRequest?.Gender,
+                Breed = koiFishRequest?.Breed,
+                Origin = koiFishRequest?.Origin,
+                Price = koiFishRequest?.Price,
+                PondId = pondId,
+            };
+            bool creatKoi = await koiRepository.CreateKoiFish(Koi);
+            if (creatKoi == true) {
+                return "Create Koi successfully";
+            }
+            return "Create Koi fail";
+
         }
 
-        public Task<bool> DeleteKoiFish(int id)
+        public async Task<bool> DeleteKoiFish(int id)
         {
-            throw new NotImplementedException();
+            bool delete =  await koiRepository.DeleteKoiFish(id);
+            if(delete == true) { return true; }
+            return false;
+
         }
 
-        public Task<KoiFishResponse> GetKoiFishById(int id)
+        public async Task<KoiFishResponse> GetKoiFishById(int id)
         {
-            throw new NotImplementedException();
+            return await koiRepository.GetKoiFishById(id);
         }
 
         public async Task<List<KoiFishResponse>> GetKoiFishByPondId(int Pondid)
@@ -39,9 +65,14 @@ namespace ServiceLayer.Implement
             return await koiRepository.GetKoiFishByPondId(Pondid);
         }
 
-        public Task<string> UpdateKoiFish(int id)
+        public async Task<string> UpdateKoiFish(int id, KoiFishRequest koiFishRequest)
         {
-            throw new NotImplementedException();
+            bool updateKoi = await koiRepository.UpdateKoi(id, koiFishRequest);
+            if (updateKoi == true)
+            {
+                return "update koi successfully";
+            }
+            return "update koi fail";
         }
     }
 }
