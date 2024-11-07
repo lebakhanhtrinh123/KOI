@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Entity;
 using BusinessLayer.Request;
 using BusinessLayer.Response;
+using BusinessLayer.ViewModel;
 using RepoitoryLayer.Interface;
 using ServiceLayer.Interface;
 using System;
@@ -66,5 +67,11 @@ namespace ServiceLayer.Implement
             }
             return false;
         }
+
+        public async Task<TestWaterParameterModel> TestWaterParameter(int ponid)
+        {
+            return await pondsRepository.TestWaterParameter(ponid);
+        }
+      
     }
 }

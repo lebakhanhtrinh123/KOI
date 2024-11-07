@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Entity;
 using BusinessLayer.Request;
 using BusinessLayer.Response;
+using BusinessLayer.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,6 @@ namespace RepoitoryLayer.Interface
         Task<bool> DeletePond(int id);
 
         Task<bool> UpdatePond(int pondId, PondsRequest pondsRequest);
-
+        Task<TestWaterParameterModel> TestWaterParameter(int ponid);
     }
 }

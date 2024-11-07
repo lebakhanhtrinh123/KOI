@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Request;
 using BusinessLayer.Response;
+using BusinessLayer.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using RepoitoryLayer.Implement;
 using RepoitoryLayer.Interface;
@@ -92,5 +93,14 @@ namespace KOI.Controllers.Pond
 
             return BadRequest("Delete failed");
         }
+        [HttpPost("test-water-parameter/{ponid}")]
+
+        public async Task<ActionResult<TestWaterParameterModel>> TestWaterParameter(int ponid)
+        {
+            var test = await _pondsRepository.TestWaterParameter(ponid);
+            return Ok(test);
+        }
+
+
     }
 }

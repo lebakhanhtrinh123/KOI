@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.ViewModel
 {
-    public class AmountSaltModel
-    {     
-        public decimal? SaltAmount { get; set; }
-        public string? SaltAmountWithUnit { get; set; }
+    public class TestWaterParameterModel
+    {
+        public string? message {  get; set; }
+        public CaculatorWaterParameterModel? model { get; set; }    
     }
 }
