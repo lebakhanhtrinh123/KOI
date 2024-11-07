@@ -93,7 +93,7 @@ namespace KOI.Controllers.Pond
 
             return BadRequest("Delete failed");
         }
-        [HttpPost("test-water-parameter/{ponid}")]
+        [HttpGet("test-water-parameter/{ponid}")]
 
         public async Task<ActionResult<TestWaterParameterModel>> TestWaterParameter(int ponid)
         {

@@ -24,11 +24,9 @@ namespace KOI.Controllers.KoiGrowth
             }
 
             string result = await _koiGrowthService.CreateKoiGrowth(koiId, koiGrowthRequest);
-            if (result == "Create KoiGrowth successfully")
-            {
+          
                 return Ok(new { message = result });
-            }
-            return BadRequest(new { message = result });
+       
         }
         [HttpDelete("delete-koigrowth/{koiGrowthId}")]
         public async Task<IActionResult> DeleteKoiGrowth(int koiGrowthId)
