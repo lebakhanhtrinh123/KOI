@@ -75,6 +75,8 @@ builder.Services.AddScoped<IWaterParametersRepository, WaterParametersRepository
 
 builder.Services.AddScoped<ISaltCalculationService, SaltCalculationService>();
 
+builder.Services.AddScoped<IKoiRepository, KoiRepository>();
+builder.Services.AddScoped<IKoiService, KoiService>();
 
 builder.Services.AddCors(options =>
 {
