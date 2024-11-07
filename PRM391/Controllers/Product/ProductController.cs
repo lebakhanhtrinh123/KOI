@@ -28,6 +28,15 @@ namespace PRM391.Controllers.Product
 
             return Ok(products);
         }
+        [HttpGet("get-all-productby-id/{productId}")]
+        public async Task<ActionResult<ProductResponse>> GetProductByID(int productId)
+        {
+            var products = await productService.getProductByIddd(productId);
+
+
+        
+            return Ok(products);
+        }
 
         [HttpPost("create-product")]
         public async Task<ActionResult> CreateProduct(ProductRequest productRequest)

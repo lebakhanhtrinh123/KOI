@@ -48,87 +48,75 @@ namespace RepoitoryLayer.Implement
 
         }
 
-        public async Task<List<PondsResponse>>? GetAllPonds()
+        public async Task<List<PondsResponse>> GetAllPonds()
         {
-            var ponds = await _context.Ponds
-                    .Include(o => o.SaltCalculations)
-                     .Include(n => n.WaterParameters)
-                        .ToListAsync();
-            var pondTasks = ponds.Select(async pond =>
-            {
-                var salt = await _saltCalculationsRepository.GetSaltCalculationsByPondID(pond.PondId);
-                var waterParameter = await _waterParametersRepository.GetWaterParametersByPondID(pond.PondId);
+            var pondsQuery = from pond in _context.Ponds
+                             join salt in _context.SaltCalculations on pond.PondId equals salt.PondId into pondSalt
+                             from salt in pondSalt.DefaultIfEmpty() 
+                             join water in _context.WaterParameters on pond.PondId equals water.PondId into pondWater
+                             from water in pondWater.DefaultIfEmpty() 
+                             select new PondsResponse
+                             {
+                                 PondId = pond.PondId,
+                                 PondName = pond.PondName,
+                                 Size = pond.Size,
+                                 Depth = pond.Depth,
+                                 Volume = pond.Volume,
+                                 WaterDischargeRate = pond.WaterDischargeRate,
+                                 PumpCapacity = pond.PumpCapacity,
+                                 UserId = pond.UserId,
+                                 MeasurementDate = water != null ? water.MeasurementDate : null,
+                                 Temperature = water != null ? water.Temperature : 0,
+                                 Salinity = water != null ? water.Salinity : 0,
+                                 PH = water != null ? water.PH : 0,
+                                 Oxygen = water != null ? water.Oxygen : 0,
+                                 No2 = water != null ? water.No2 : 0,
+                                 No3 = water != null ? water.No3 : 0,
+                                 Po4 = water != null ? water.Po4 : 0,
+                                 CalculationDate = salt != null ? salt.CalculationDate : null,
+                                 SaltAmount = salt != null ? salt.SaltAmount : 0,
+                                 Notes = salt != null ? salt.Notes : string.Empty
+                             };
 
-                return new PondsResponse
-                {
-                    PondId = pond.PondId,
-                    PondName = pond.PondName,
-                    Size = pond.Size,
-                    Depth = pond.Depth,
-                    Volume = pond.Volume,
-                    WaterDischargeRate = pond.WaterDischargeRate,
-                    PumpCapacity = pond.PumpCapacity,
-                    UserId = pond.UserId,
-                    MeasurementDate = waterParameter.MeasurementDate,
-                    Temperature = waterParameter.Temperature,
-                    Salinity = waterParameter.Salinity,
-                    PH = waterParameter.PH,
-                    Oxygen = waterParameter.Oxygen,
-                    No2 = waterParameter.No2,
-                    No3 = waterParameter.No3,
-                    Po4 = waterParameter.Po4,
-                    CalculationDate = salt.CalculationDate,
-                    SaltAmount = salt.SaltAmount,
-                    Notes = salt.Notes,
-                };
-            });
+            var pondsResponse = await pondsQuery.ToListAsync();
 
-            var pondsResponse = await Task.WhenAll(pondTasks);
-
-            return pondsResponse.ToList();
-
-
+            return pondsResponse;
         }
 
         public async Task<List<PondsResponse>> GetAllPondsByUserId(int userId)
         {
-            var ponds = await _context.Ponds
-                    .Include(o => o.SaltCalculations)
-                     .Include(n => n.WaterParameters)
-                     .Where(n => n.UserId == userId)
-                        .ToListAsync();
-            var pondTasks = ponds.Select(async pond =>
-            {
-                var salt = await _saltCalculationsRepository.GetSaltCalculationsByPondID(pond.PondId);
-                var waterParameter = await _waterParametersRepository.GetWaterParametersByPondID(pond.PondId);
+            var pondsQuery = from pond in _context.Ponds
+                             join salt in _context.SaltCalculations on pond.PondId equals salt.PondId into pondSalt
+                             from salt in pondSalt.DefaultIfEmpty() 
+                             join water in _context.WaterParameters on pond.PondId equals water.PondId into pondWater
+                             from water in pondWater.DefaultIfEmpty() 
+                             where pond.UserId == userId
+                             select new PondsResponse
+                             {
+                                 PondId = pond.PondId,
+                                 PondName = pond.PondName,
+                                 Size = pond.Size,
+                                 Depth = pond.Depth,
+                                 Volume = pond.Volume,
+                                 WaterDischargeRate = pond.WaterDischargeRate,
+                                 PumpCapacity = pond.PumpCapacity,
+                                 UserId = pond.UserId,
+                                 MeasurementDate = water != null ? water.MeasurementDate : null,
+                                 Temperature = water != null ? water.Temperature : 0,
+                                 Salinity = water != null ? water.Salinity : 0,
+                                 PH = water != null ? water.PH : 0,
+                                 Oxygen = water != null ? water.Oxygen : 0,
+                                 No2 = water != null ? water.No2 : 0,
+                                 No3 = water != null ? water.No3 : 0,
+                                 Po4 = water != null ? water.Po4 : 0,
+                                 CalculationDate = salt != null ? salt.CalculationDate : null,
+                                 SaltAmount = salt != null ? salt.SaltAmount : 0,
+                                 Notes = salt != null ? salt.Notes : string.Empty
+                             };
 
-                return new PondsResponse
-                {
-                    PondId = pond.PondId,
-                    PondName = pond.PondName,
-                    Size = pond.Size,
-                    Depth = pond.Depth,
-                    Volume = pond.Volume,
-                    WaterDischargeRate = pond.WaterDischargeRate,
-                    PumpCapacity = pond.PumpCapacity,
-                    UserId = pond.UserId,
-                    MeasurementDate = waterParameter.MeasurementDate,
-                    Temperature = waterParameter.Temperature,
-                    Salinity = waterParameter.Salinity,
-                    PH = waterParameter.PH,
-                    Oxygen = waterParameter.Oxygen,
-                    No2 = waterParameter.No2,
-                    No3 = waterParameter.No3,
-                    Po4 = waterParameter.Po4,
-                    CalculationDate = salt.CalculationDate,
-                    SaltAmount = salt.SaltAmount,
-                    Notes = salt.Notes,
-                };
-            });
+            var pondsResponse = await pondsQuery.ToListAsync();
 
-            var pondsResponse = await Task.WhenAll(pondTasks);
-
-            return pondsResponse.ToList();
+            return pondsResponse;
         }
 
         public async Task<PondsResponse> GetPondsById(int id)

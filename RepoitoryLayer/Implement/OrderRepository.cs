@@ -50,6 +50,8 @@ namespace RepoitoryLayer.Implement
                 {
                     productName = _productRepository.GetProductNameById(oi.CartId),
                     image = _productRepository.GetProductImageById(oi.CartId),
+                    price = _productRepository.GetProductPriceById(oi.CartId),
+                
 
                 }).ToList()
             }).ToList();

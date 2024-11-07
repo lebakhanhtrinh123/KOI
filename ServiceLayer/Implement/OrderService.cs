@@ -110,7 +110,7 @@ namespace ServiceLayer.Implement
                 OrderItems = orderItems.Select(oi => new OrderItermReponse
                 {
                     productName = _productRepository.GetProductNameById(oi.CartId),
-                    
+                    price = _productRepository.GetProductPriceById(oi.CartId),
                     
                 }).ToList(),
             };

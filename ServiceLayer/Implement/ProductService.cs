@@ -63,5 +63,10 @@ namespace ServiceLayer.Implement
         {
             throw new NotImplementedException();
         }
+
+        public async Task<ProductResponse> getProductByIddd(int productID)
+        {
+            return await productRepository.GetProductById(productID);
+        }
     }
 }

@@ -12,13 +12,13 @@ namespace RepoitoryLayer.Implement
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly KoiContext _context  ;
+        private readonly KoiContext _context;
 
         public ProductRepository(KoiContext context)
         {
             _context = context;
         }
-        public async  Task<Product> CreateProduct(Product product)
+        public async Task<Product> CreateProduct(Product product)
         {
             _context.Products.Add(product);
             _context.SaveChanges();
@@ -90,6 +90,12 @@ namespace RepoitoryLayer.Implement
             return cart.Product.ProductName;
         }
 
+        public decimal? GetProductPriceById(int? cartId)
+        {
+            Cart? cart = _context.Carts.Include(c => c.Product).FirstOrDefault(n => n.CartId == cartId);
+            return cart.Product.Price;
+        }
+
         public async Task<ProductResponse> UpdateProduct(ProductResponse productResponse)
         {
             var product = await _context.Products.FindAsync(productResponse.ProductId);
@@ -107,6 +113,6 @@ namespace RepoitoryLayer.Implement
             return productResponse;
         }
 
-        
+
     }
 }

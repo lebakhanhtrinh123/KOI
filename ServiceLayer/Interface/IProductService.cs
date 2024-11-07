@@ -15,6 +15,8 @@ namespace ServiceLayer.Interface
         Task<Product> CreateProduct(ProductRequest productRequest);
         Task<ProductResponse> UpdateProduct(int productID, ProductRequest productRequest);
         Task<Product> DeleteProduct(int productID);
-        Task<Product> getProductById(int productID);    
+        Task<Product> getProductById(int productID);
+
+        Task<ProductResponse> getProductByIddd(int productID);
     }
 }

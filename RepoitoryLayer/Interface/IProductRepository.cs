@@ -17,6 +17,7 @@ namespace RepoitoryLayer.Interface
         Task<ProductResponse> GetProductById(int productId);
         string GetProductImageById(int? cartId);
         string GetProductNameById(int? cartId);
+        decimal? GetProductPriceById(int? cartId);
         Task<ProductResponse> UpdateProduct(ProductResponse product);
     }
 }
