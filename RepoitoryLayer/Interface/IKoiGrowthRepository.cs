@@ -14,5 +14,6 @@ namespace RepoitoryLayer.Interface
         Task<bool> CreateKoiGrowth(KoiGrowth koiGrowth);
         Task<bool> DeleteKoiGrowth(int koiGrowthId);
         Task<List<KoiGrowthResponse>> GetKoiGrowths(int koiId);
+        Task<KoiGrowth> GetKoiGrowthById(int koiId);
     }
 }

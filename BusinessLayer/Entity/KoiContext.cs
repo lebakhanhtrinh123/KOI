@@ -110,7 +110,6 @@ public partial class KoiContext : DbContext
             entity.ToTable("KoiGrowth");
 
             entity.Property(e => e.GrowthId).HasColumnName("GrowthID");
-            entity.Property(e => e.KoiGrowth1).HasColumnName("KoiGrowth");
             entity.Property(e => e.KoiId).HasColumnName("KoiID");
             entity.Property(e => e.Notes).HasMaxLength(255);
             entity.Property(e => e.Size).HasColumnType("decimal(10, 2)");

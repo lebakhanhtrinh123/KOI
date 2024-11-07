@@ -8,6 +8,7 @@ namespace BusinessLayer.Response
 {
     public class KoiGrowthResponse
     {
+        public int GrowthId { get; set; }
         public DateOnly? GrowthDate { get; set; }
 
         public decimal? Size { get; set; }

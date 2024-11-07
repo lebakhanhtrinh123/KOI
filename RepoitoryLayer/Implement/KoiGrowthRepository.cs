@@ -41,14 +41,22 @@ namespace RepoitoryLayer.Implement
             return true;
         }
 
+        public async Task<KoiGrowth> GetKoiGrowthById(int koiId)
+        {
+            var koiGrowth = await _context.KoiGrowths
+                  .FirstOrDefaultAsync(n => n.GrowthId == koiId);
+            return koiGrowth;
+        }
+
         public async Task<List<KoiGrowthResponse>> GetKoiGrowths(int koiId)
         {
             var koiGrowths = await _context.KoiGrowths
-                .Where(n => n.KoiId == koiId)  // Sử dụng KoiId thay vì GrowthId nếu bạn muốn lấy theo KoiId
+                .Where(n => n.KoiId == koiId)  
                 .ToListAsync();
 
             var koi = koiGrowths.Select(koiGrowth => new KoiGrowthResponse
             {
+                GrowthId = koiGrowth.GrowthId,
                 GrowthDate = koiGrowth.GrowthDate,
                 Size = koiGrowth.Size,
                 Weight = koiGrowth.Weight,

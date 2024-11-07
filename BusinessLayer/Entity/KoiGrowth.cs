@@ -17,7 +17,6 @@ public partial class KoiGrowth
 
     public string? Notes { get; set; }
 
-    public int? KoiGrowth1 { get; set; }
 
     public virtual ICollection<FeedSchedule> FeedSchedules { get; set; } = new List<FeedSchedule>();
 
