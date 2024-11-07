@@ -27,5 +27,9 @@ public partial class KoiFish
 
     public int? PondId { get; set; }
 
+    public virtual ICollection<FeedSchedule> FeedSchedules { get; set; } = new List<FeedSchedule>();
+
+    public virtual ICollection<KoiGrowth> KoiGrowths { get; set; } = new List<KoiGrowth>();
+
     public virtual Pond? Pond { get; set; }
 }

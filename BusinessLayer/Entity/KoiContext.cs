@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace BusinessLayer.Entity;
 
@@ -17,7 +18,11 @@ public partial class KoiContext : DbContext
 
     public virtual DbSet<Cart> Carts { get; set; }
 
+    public virtual DbSet<FeedSchedule> FeedSchedules { get; set; }
+
     public virtual DbSet<KoiFish> KoiFishes { get; set; }
+
+    public virtual DbSet<KoiGrowth> KoiGrowths { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -33,10 +38,13 @@ public partial class KoiContext : DbContext
 
     public virtual DbSet<WaterParameter> WaterParameters { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=KOI;User ID=sa;Password=12345;Trust Server Certificate=True");
-
+    private string? GetConnectionString()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
+        return configuration["ConnectionStrings:DBDefault"];
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
@@ -54,6 +62,23 @@ public partial class KoiContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Carts_Users");
+        });
+
+        modelBuilder.Entity<FeedSchedule>(entity =>
+        {
+            entity.HasKey(e => e.FeedId);
+
+            entity.ToTable("FeedSchedule");
+
+            entity.Property(e => e.FeedId).HasColumnName("FeedID");
+            entity.Property(e => e.FeedAmount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.FeedDate).HasColumnType("datetime");
+            entity.Property(e => e.KoiId).HasColumnName("KoiID");
+            entity.Property(e => e.Notes).HasMaxLength(255);
+
+            entity.HasOne(d => d.Koi).WithMany(p => p.FeedSchedules)
+                .HasForeignKey(d => d.KoiId)
+                .HasConstraintName("FK_FeedSchedule_KoiFish");
         });
 
         modelBuilder.Entity<KoiFish>(entity =>
@@ -76,6 +101,23 @@ public partial class KoiContext : DbContext
             entity.HasOne(d => d.Pond).WithMany(p => p.KoiFishes)
                 .HasForeignKey(d => d.PondId)
                 .HasConstraintName("FK_KoiFish_Ponds1");
+        });
+
+        modelBuilder.Entity<KoiGrowth>(entity =>
+        {
+            entity.HasKey(e => e.GrowthId);
+
+            entity.ToTable("KoiGrowth");
+
+            entity.Property(e => e.GrowthId).HasColumnName("GrowthID");
+            entity.Property(e => e.KoiId).HasColumnName("KoiID");
+            entity.Property(e => e.Notes).HasMaxLength(255);
+            entity.Property(e => e.Size).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Weight).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Koi).WithMany(p => p.KoiGrowths)
+                .HasForeignKey(d => d.KoiId)
+                .HasConstraintName("FK_KoiGrowth_KoiFish");
         });
 
         modelBuilder.Entity<Order>(entity =>
