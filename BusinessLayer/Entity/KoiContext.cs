@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace BusinessLayer.Entity;
 
@@ -38,13 +37,10 @@ public partial class KoiContext : DbContext
 
     public virtual DbSet<WaterParameter> WaterParameters { get; set; }
 
-    private string? GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration["ConnectionStrings:DBDefault"];
-    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=(local);Initial Catalog=KOI;User ID=sa;Password=12345;Trusted_Connection=True;Trust Server Certificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
@@ -75,6 +71,10 @@ public partial class KoiContext : DbContext
             entity.Property(e => e.FeedDate).HasColumnType("datetime");
             entity.Property(e => e.KoiId).HasColumnName("KoiID");
             entity.Property(e => e.Notes).HasMaxLength(255);
+
+            entity.HasOne(d => d.KoiGrowthNavigation).WithMany(p => p.FeedSchedules)
+                .HasForeignKey(d => d.KoiGrowth)
+                .HasConstraintName("FK_FeedSchedule_KoiGrowth");
 
             entity.HasOne(d => d.Koi).WithMany(p => p.FeedSchedules)
                 .HasForeignKey(d => d.KoiId)
@@ -110,6 +110,7 @@ public partial class KoiContext : DbContext
             entity.ToTable("KoiGrowth");
 
             entity.Property(e => e.GrowthId).HasColumnName("GrowthID");
+            entity.Property(e => e.KoiGrowth1).HasColumnName("KoiGrowth");
             entity.Property(e => e.KoiId).HasColumnName("KoiID");
             entity.Property(e => e.Notes).HasMaxLength(255);
             entity.Property(e => e.Size).HasColumnType("decimal(10, 2)");

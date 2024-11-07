@@ -15,5 +15,9 @@ public partial class FeedSchedule
 
     public string? Notes { get; set; }
 
+    public int? KoiGrowth { get; set; }
+
     public virtual KoiFish? Koi { get; set; }
+
+    public virtual KoiGrowth? KoiGrowthNavigation { get; set; }
 }

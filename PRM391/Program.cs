@@ -78,6 +78,9 @@ builder.Services.AddScoped<ISaltCalculationService, SaltCalculationService>();
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
 builder.Services.AddScoped<IKoiService, KoiService>();
 
+
+builder.Services.AddScoped<IKoiGrowthRepository, KoiGrowthRepository>();
+builder.Services.AddScoped<IKoiGrowthService, KoiGrowthService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
